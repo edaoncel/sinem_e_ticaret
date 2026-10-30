@@ -9,7 +9,7 @@
             <span class="text-xs text-brandOrange font-bold uppercase tracking-widest">Yetkilendirme</span>
             <h1 class="text-2xl font-black text-gray-900 mt-1">Yönetici Listesi</h1>
         </div>
-        <a href="{{ route('admin.admins.create') }}" class="bg-brandOrange hover:bg-orange-600 text-white px-5 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider transition shadow-sm">
+        <a href="{{ route('admin.admins.create') }}" class="text-center bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-xl text-sm font-bold transition shadow-sm whitespace-nowrap">
             + Yeni Yönetici Ekle
         </a>
     </div>
