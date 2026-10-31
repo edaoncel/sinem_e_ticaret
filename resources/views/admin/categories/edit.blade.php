@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Sinem - Kategori Düzenle')
+@section('title', 'Alveral - Kategori Düzenle')
 
 @section('content')
 <div class="max-w-3xl mx-auto">
@@ -40,6 +40,14 @@
                 <input type="text" name="name" value="{{ old('name', $category->name) }}" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-medium text-slate-800 focus:outline-none focus:border-brandOrange focus:ring-1 focus:ring-brandOrange transition">
             </div>
 
+            <!-- Menüde Göster Seçeneği -->
+            <div class="flex items-center gap-3 bg-slate-50 border border-slate-200 rounded-xl p-4">
+                <input type="checkbox" name="show_in_menu" id="show_in_menu" value="1" {{ old('show_in_menu', $category->show_in_menu) ? 'checked' : '' }} class="w-5 h-5 text-brandOrange border-slate-300 rounded focus:ring-brandOrange">
+                <label for="show_in_menu" class="text-sm font-bold text-slate-700 cursor-pointer select-none">
+                    Bu kategoriyi menülerde göster.
+                </label>
+            </div>
+
             <div>
                 <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Mevcut Kapak Görseli</label>
                 <div class="flex items-center gap-4 mb-4">
@@ -59,7 +67,7 @@
 
             <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
                 <a href="{{ route('admin.categories.index') }}" class="px-5 py-2.5 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-100 transition">İptal</a>
-                <button type="submit" class="bg-brandOrange text-white px-6 py-2.5 rounded-xl text-sm font-bold hover:bg-orange-600 transition shadow-sm">Değişiklikleri Kaydet</button>
+                <button type="submit" class="w-full bg-gray-600 text-white py-3 rounded-xl font-bold hover:bg-gray-700 transition shadow-sm text-sm">Değişiklikleri Kaydet</button>
             </div>
         </form>
     </div>

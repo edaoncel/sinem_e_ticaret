@@ -126,7 +126,6 @@
             </form>
         </div>
 
-        <!-- SOSYAL MEDYA & KURUMSAL BİLGİ -->
         <div class="lg:col-span-5 space-y-8">
             
             <div class="bg-white border border-slate-200 p-8 rounded-3xl shadow-xl space-y-6">

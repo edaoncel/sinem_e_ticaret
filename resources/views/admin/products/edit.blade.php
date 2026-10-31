@@ -137,7 +137,7 @@
 
         <div class="flex justify-between items-center pt-4 border-t border-slate-100">
             <a href="{{ route('admin.products.index') }}" class="text-gray-600 hover:underline text-sm font-medium">Geri Dön</a>
-            <button type="submit" class="bg-blue-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-blue-700 transition text-sm shadow-sm">Değişiklikleri Kaydet</button>
+            <button type="submit" class="w-full bg-gray-600 text-white py-3 rounded-xl font-bold hover:bg-gray-700 transition shadow-sm text-sm">Değişiklikleri Kaydet</button>
         </div>
     </form>
 </div>

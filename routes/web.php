@@ -11,7 +11,6 @@ use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\MarketplaceController;
 
-// Yönetim Paneli Rotaları (Admin Mimarisine Göre)
 Route::prefix('yonetim')->name('admin.')->middleware(['web', 'auth:admin'])->group(function () {
     
     // Pazar Yeri / Alveral Entegrasyon Rotaları
