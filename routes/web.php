@@ -10,7 +10,9 @@ use App\Http\Controllers\Admin\AdminManagementController;
 use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\MarketplaceController;
+use App\Http\Controllers\KvkkController;
 
+Route::get('/kvkk', [KvkkController::class, 'kvkk'])->name('kvkk.terms');
 Route::prefix('yonetim')->name('admin.')->middleware(['web', 'auth:admin'])->group(function () {
     
     // Pazar Yeri / Alveral Entegrasyon Rotaları
