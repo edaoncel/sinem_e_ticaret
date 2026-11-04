@@ -35,22 +35,22 @@
         </li>
         <!-- Instagram -->
         <li>
-            <a href="https://www.instagram.com/alveral.tr/" target="_blank" rel="noopener noreferrer" class="flex items-center justify-between p-3 rounded-xl bg-emerald-950/60 hover:bg-emerald-800/60 transition">
-                <span>Instagram (@alveral.tr)</span>
+            <a href="https://www.instagram.com/sinem.tr/" target="_blank" rel="noopener noreferrer" class="flex items-center justify-between p-3 rounded-xl bg-emerald-950/60 hover:bg-emerald-800/60 transition">
+                <span>Instagram (@sinem.tr)</span>
                 <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
             </a>
         </li>
         <!-- Facebook -->
         <li>
-            <a href="https://www.facebook.com/alveral.tr/" target="_blank" rel="noopener noreferrer" class="flex items-center justify-between p-3 rounded-xl bg-emerald-950/60 hover:bg-emerald-800/60 transition">
-                <span>Facebook (Alveral TR)</span>
+            <a href="https://www.facebook.com/sinem.tr/" target="_blank" rel="noopener noreferrer" class="flex items-center justify-between p-3 rounded-xl bg-emerald-950/60 hover:bg-emerald-800/60 transition">
+                <span>Facebook (Sinem TR)</span>
                 <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
             </a>
         </li>
         <!-- TikTok -->
         <li>
-            <a href="https://www.tiktok.com/@alveral.tr" target="_blank" rel="noopener noreferrer" class="flex items-center justify-between p-3 rounded-xl bg-emerald-950/60 hover:bg-emerald-800/60 transition">
-                <span>TikTok (@alveral.tr)</span>
+            <a href="https://www.tiktok.com/@sinem.tr" target="_blank" rel="noopener noreferrer" class="flex items-center justify-between p-3 rounded-xl bg-emerald-950/60 hover:bg-emerald-800/60 transition">
+                <span>TikTok (@sinem.tr)</span>
                 <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
             </a>
         </li>
@@ -159,7 +159,7 @@
 
     <div class="space-y-3">
         <!-- INSTAGRAM -->
-        <a href="https://www.instagram.com/alveral.tr/" target="_blank" rel="noopener noreferrer" class="flex items-center gap-4 p-4 bg-slate-50 hover:bg-emerald-50 rounded-2xl transition border border-slate-100 group">
+        <a href="https://www.instagram.com/sinem.tr/" target="_blank" rel="noopener noreferrer" class="flex items-center gap-4 p-4 bg-slate-50 hover:bg-emerald-50 rounded-2xl transition border border-slate-100 group">
             <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-500 via-rose-500 to-purple-600 flex items-center justify-center text-white shrink-0 shadow-md group-hover:scale-105 transition">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/>
@@ -168,33 +168,33 @@
                 </svg>
             </div>
             <div>
-                <span class="block text-slate-900 group-hover:text-emerald-800 font-black text-sm transition">@alveral.tr</span>
+                <span class="block text-slate-900 group-hover:text-emerald-800 font-black text-sm transition">@sinem.tr</span>
                 <span class="text-[11px] text-slate-400 font-normal">Resmi Instagram Sayfası</span>
             </div>
         </a>
 
         <!-- FACEBOOK -->
-        <a href="https://www.facebook.com/alveral.tr/" target="_blank" rel="noopener noreferrer" class="flex items-center gap-4 p-4 bg-slate-50 hover:bg-emerald-50 rounded-2xl transition border border-slate-100 group">
+        <a href="https://www.facebook.com/sinem.tr/" target="_blank" rel="noopener noreferrer" class="flex items-center gap-4 p-4 bg-slate-50 hover:bg-emerald-50 rounded-2xl transition border border-slate-100 group">
             <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-blue-700 to-blue-500 flex items-center justify-center text-white shrink-0 shadow-md group-hover:scale-105 transition">
                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
                 </svg>
             </div>
             <div>
-                <span class="block text-slate-900 group-hover:text-emerald-800 font-black text-sm transition">Alveral TR</span>
+                <span class="block text-slate-900 group-hover:text-emerald-800 font-black text-sm transition">Sinem TR</span>
                 <span class="text-[11px] text-slate-400 font-normal">Resmi Facebook Sayfası</span>
             </div>
         </a>
 
         <!-- TIKTOK -->
-        <a href="https://www.tiktok.com/@alveral.tr" target="_blank" rel="noopener noreferrer" class="flex items-center gap-4 p-4 bg-slate-50 hover:bg-emerald-50 rounded-2xl transition border border-slate-100 group">
+        <a href="https://www.tiktok.com/@sinem.tr" target="_blank" rel="noopener noreferrer" class="flex items-center gap-4 p-4 bg-slate-50 hover:bg-emerald-50 rounded-2xl transition border border-slate-100 group">
             <div class="w-11 h-11 rounded-2xl bg-slate-900 flex items-center justify-center text-white shrink-0 shadow-md group-hover:scale-105 transition">
                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 3 15.68 6.34 6.34 0 0 0 9.34 22a6.34 6.34 0 0 0 6.33-6.32V9.05a8.16 8.16 0 0 0 4.92 1.62V7.24a4.87 4.87 0 0 1-1-.55z"/>
                 </svg>
             </div>
             <div>
-                <span class="block text-slate-900 group-hover:text-emerald-800 font-black text-sm transition">@alveral.tr</span>
+                <span class="block text-slate-900 group-hover:text-emerald-800 font-black text-sm transition">@sinem.tr</span>
                 <span class="text-[11px] text-slate-400 font-normal">Resmi TikTok Sayfası</span>
             </div>
         </a>

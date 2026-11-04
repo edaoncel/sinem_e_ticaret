@@ -24,9 +24,9 @@ class MarketplaceController extends Controller
     public function updateMargin(Request $request)
     {
         $yeni_kar = floatval($request->input('varsayilan_kar', 26));
-        session(['alveral_kar' => $yeni_kar]);
+        session(['sinem_kar' => $yeni_kar]);
 
-        return redirect()->back()->with('success', "Alveral kâr oranı %{$yeni_kar} olarak güncellendi!");
+        return redirect()->back()->with('success', "Sinem kâr oranı %{$yeni_kar} olarak güncellendi!");
     }
 
     /**
@@ -47,7 +47,7 @@ class MarketplaceController extends Controller
                     return redirect()->back()->with('error', "XML dosyası okunamadı veya geçersiz formatta!");
                 }
 
-                $firma_kar = session('alveral_kar', 26.00); 
+                $firma_kar = session('sinem_kar', 26.00); 
                 $sayac = 0;
 
                 $urunlerListesi = isset($xml->Urun) ? $xml->Urun : ($xml->item ?? $xml->children());
@@ -88,7 +88,7 @@ class MarketplaceController extends Controller
                     $sayac++;
                 }
 
-                return redirect()->back()->with('success', "Alveral XML başarıyla işlendi: <b>{$sayac}</b> adet ürün güncellendi/eklendi!");
+                return redirect()->back()->with('success', "Sinem XML başarıyla işlendi: <b>{$sayac}</b> adet ürün güncellendi/eklendi!");
             }
         }
 

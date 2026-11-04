@@ -24,19 +24,54 @@
 </head>
 <body class="bg-[#f8faf8] min-h-screen text-slate-800 antialiased flex flex-col justify-between selection:bg-emerald-700 selection:text-white" x-data="{ mobileMenu: false, mobileCatOpen: false }">
 
-    <nav class="bg-white/95 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-50">
+<nav class="bg-white/95 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-6 sm:px-12 h-24 flex justify-between items-center">
             
+            <!-- Logo -->
             <a href="{{ url('/') }}" class="flex items-center">
                 <img src="{{ asset('img/logo/logo.png') }}" alt="Sinem" class="h-11 w-auto object-contain">
             </a>
 
-            <div class="hidden md:flex items-center space-x-12 text-xs font-semibold tracking-widest text-slate-700 uppercase">
+            <!-- Masaüstü Menü Linkleri -->
+            <div class="hidden md:flex items-center space-x-10 text-xs font-bold tracking-widest text-slate-700 uppercase">
                 <a href="{{ url('/') }}" class="text-emerald-800 hover:text-emerald-600 transition">Ana Sayfa</a>
+
+                <!-- Özel Kategoriler Dropdown Menü -->
+                @php
+                    $navCategories = \App\Models\Category::where('show_in_menu', true)->get();
+                @endphp
+
+                @if(isset($navCategories) && count($navCategories) > 0)
+                    <div class="relative" x-data="{ catDropdown: false }" @mouseleave="catDropdown = false">
+                        <button @mouseover="catDropdown = true" @click="catDropdown = !catDropdown" class="flex items-center gap-1.5 hover:text-emerald-600 transition py-2 focus:outline-none">
+                            <span>KATEGORİLER</span>
+                            <svg class="w-3.5 h-3.5 transition-transform duration-200" :class="catDropdown ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+                        </button>
+
+                        <!-- Açılır Kategori Kutusu -->
+                        <div x-show="catDropdown" 
+                             x-cloak 
+                             x-transition:enter="transition ease-out duration-200"
+                             x-transition:enter-start="opacity-0 translate-y-2"
+                             x-transition:enter-end="opacity-100 translate-y-0"
+                             x-transition:leave="transition ease-in duration-150"
+                             x-transition:leave-start="opacity-100 translate-y-0"
+                             x-transition:leave-end="opacity-0 translate-y-2"
+                             class="absolute top-full left-0 w-56 bg-white border border-slate-200 rounded-2xl shadow-xl py-3 px-2 space-y-1 z-50">
+                            @foreach($navCategories as $navCat)
+                                <a href="{{ url('/?category=' . $navCat->slug . '#urunler') }}" 
+                                   class="block px-3.5 py-2 rounded-xl text-[11px] font-semibold text-slate-600 hover:bg-emerald-50 hover:text-emerald-700 transition">
+                                    {{ $navCat->name }}
+                                </a>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
+
                 <a href="{{ route('contact') }}" class="hover:text-emerald-600 transition">İletişim</a>
             </div>
 
-            <!-- Sağ Butonlar -->
+            <!-- Sağ Butonlar (Panel / Admin Girişi) -->
             <div class="flex items-center gap-4">
                 @auth('admin')
                     <a href="{{ route('admin.dashboard') }}" class="hidden sm:inline-flex bg-emerald-800 text-white hover:bg-emerald-900 px-6 py-3 rounded-full text-xs font-bold uppercase tracking-wider transition shadow-sm">Yönetim Paneli</a>
@@ -44,6 +79,7 @@
                     <a href="{{ route('admin.login') }}" class="hidden sm:inline-flex border border-slate-300 text-slate-800 hover:bg-slate-900 hover:text-white px-6 py-3 rounded-full text-xs font-bold uppercase tracking-wider transition">Admin Girişi</a>
                 @endauth
                 
+                <!-- Mobil Hamburger Butonu -->
                 <button x-on:click="mobileMenu = !mobileMenu" type="button" class="md:hidden p-3 text-slate-800 bg-slate-100 rounded-2xl border border-slate-200 focus:outline-none">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                 </button>
@@ -51,12 +87,25 @@
         </div>
 
         <!-- Mobil Menü -->
-        <div x-show="mobileMenu" x-cloak class="md:hidden bg-white border-b border-slate-200 px-8 py-6 space-y-5 shadow-2xl">
+        <div x-show="mobileMenu" x-cloak class="md:hidden bg-white border-b border-slate-200 px-8 py-6 space-y-4 shadow-2xl">
             <a href="{{ url('/') }}" class="block text-sm font-bold text-emerald-800 uppercase tracking-wider">Ana Sayfa</a>
 
-            <div class="pt-2">
-                <a href="{{ route('contact') }}" class="block text-sm font-bold text-slate-800 uppercase tracking-wider">İletişim</a>
+            <div class="border-y border-amber-100 py-3 my-2 bg-amber-50/40 px-3 rounded-xl">
+                <span class="text-[10px] font-bold text-amber-700 uppercase tracking-wider block mb-2">✨ Özel Menü Kategorileri</span>
+                <div class="space-y-2">
+                    @php
+                        $menuCategories = \App\Models\Category::where('show_in_menu', true)->get();
+                    @endphp
+                    @foreach($menuCategories as $menuCat)
+                        <a href="{{ url('/?category=' . $menuCat->slug . '#urunler') }}" class="block text-xs font-bold text-slate-700 hover:text-amber-600 pl-2">
+                            • {{ $menuCat->name }}
+                        </a>
+                    @endforeach
+                </div>
             </div>
+
+            <a href="{{ route('contact') }}" class="block text-sm font-bold text-slate-800 uppercase tracking-wider">İletişim</a>
+
             <div class="pt-4 border-t border-slate-100">
                 @auth('admin')
                     <a href="{{ route('admin.dashboard') }}" class="block text-center bg-emerald-800 text-white py-3.5 rounded-full text-xs font-bold uppercase tracking-wider transition">Yönetim Paneli</a>
@@ -93,26 +142,31 @@
         <div>
             <h4 class="text-white font-bold text-xs uppercase tracking-widest mb-4">Kategoriler</h4>
             <ul class="space-y-2 text-xs font-light">
-                @if(isset($categories))
-                    @foreach($categories as $cat)
-                        <li><a href="{{ url('/?category=' . $cat->slug . '#urunler') }}" class="hover:text-white transition">{{ $cat->name }}</a></li>
+                @if(isset($menuCategories) && count($menuCategories) > 0)
+                    @foreach($menuCategories as $menuCat)
+                        <li>
+                            <a href="{{ url('/?category=' . $menuCat->slug . '#urunler') }}" class="hover:text-white transition">
+                                {{ $menuCat->name }}
+                            </a>
+                        </li>
                     @endforeach
+                @else
+                    <li class="text-slate-400">Özel kategori bulunmuyor.</li>
                 @endif
             </ul>
         </div>
-        
-        <div>
+    <div>
             <h3 class="font-bold text-xs uppercase tracking-widest mb-4 text-white">Sosyal Medya Hesaplarımız</h3>
                 <ul>
                 <!-- 1. INSTAGRAM -->
                 <li>
-                    <a href="https://www.instagram.com/alveral.tr/" target="_blank" class="hover:text-white transition flex items-center gap-2 group">
+                    <a href="https://www.instagram.com/sinem.tr/" target="_blank" class="hover:text-white transition flex items-center gap-2 group">
                         <svg class="w-4 h-4 text-brandOrange group-hover:scale-110 transition" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/>
                             <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
                             <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>
                         </svg>
-                        <span>Instagram (@alveral.tr)</span>
+                        <span>Instagram (@sinem.tr)</span>
                     </a>
                 </li>
 
@@ -122,17 +176,17 @@
                         <svg class="w-4 h-4 text-brandOrange group-hover:scale-110 transition" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
                         </svg>
-                        <span>Facebook (Alveral)</span>
+                        <span>Facebook (Sinem)</span>
                     </a>
                 </li>
 
                 <!-- 3. TIKTOK -->
                 <li class="mt-2">
-                    <a href="https://www.tiktok.com/@alveral.tr" target="_blank" class="hover:text-white transition flex items-center gap-2 group">
+                    <a href="https://www.tiktok.com/@sinem.tr" target="_blank" class="hover:text-white transition flex items-center gap-2 group">
                         <svg class="w-4 h-4 text-brandOrange group-hover:scale-110 transition" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.13z"/>
                         </svg>
-                        <span>TikTok (@alveral.tr)</span>
+                        <span>TikTok (@sinem.tr)</span>
                     </a>
                 </li>
             </ul>

@@ -29,7 +29,7 @@ class ProductController extends Controller
             }
         }
 
-        $products = $query->latest()->paginate(12)->withQueryString();
+        $products = $query->latest()->paginate(18)->fragment('urunler');
 
         return view('admin.products.index', compact('products'));
     }
@@ -40,76 +40,71 @@ class ProductController extends Controller
         return view('admin.products.create', compact('categories'));
     }
 
-public function store(Request $request)
-{
-    // Normalize SKU to uppercase before validation
-    if ($request->filled('sku')) {
-        $request->merge([
-            'sku' => strtoupper($request->sku)
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:36',
+            'sku' => 'nullable|string|max:50|unique:products,sku',
+            'category_id' => 'nullable|exists:categories,id',
+            'description' => 'nullable|string|max:505',
+            'price' => 'required|numeric|min:0',
+            'discount_price' => 'nullable|numeric|min:0|lt:price',
+            'stock' => 'required|integer|min:0',
+            'trendyol_url' => 'nullable|url',
+            'hepsiburada_url' => 'nullable|url',
+            'idefix_url' => 'nullable|url',
+            'amazon_url' => 'nullable|url',
+            'pazarama_url' => 'nullable|url',
+            'is_best_seller' => 'nullable|boolean',
         ]);
-    }
 
-    $validated = $request->validate([
-        'name' => 'required|string|max:36',
-        'sku' => 'nullable|string|max:50|unique:products,sku',
-        'category_id' => 'nullable|exists:categories,id',
-        'description' => 'nullable|string|max:505',
-        'price' => 'required|numeric|min:0',
-        'discount_price' => 'nullable|numeric|min:0|lt:price',
-        'stock' => 'required|integer|min:0',
-        'trendyol_url' => 'nullable|url',
-        'hepsiburada_url' => 'nullable|url',
-        'idefix_url' => 'nullable|url',
-        'amazon_url' => 'nullable|url',
-        'pazarama_url' => 'nullable|url',
-        'is_best_seller' => 'nullable|boolean',
-    ]);
+        // SKU boş bırakıldıysa otomatik üret
+        if (empty($validated['sku'])) {
+            $validated['sku'] = 'SKU-' . strtoupper(Str::random(8));
+        } else {
+            $validated['sku'] = strtoupper($validated['sku']);
+        }
 
-    // If SKU is empty, generate one
-    if (empty($validated['sku'])) {
-        $validated['sku'] = 'SKU-' . strtoupper(Str::random(8));
-    }
-
-    if ($request->has('is_best_seller')) {
-        $validated['is_best_seller'] = true;
-        
-        if (Product::where('is_best_seller', true)->count() >= 7) {
-            $oldest = Product::where('is_best_seller', true)->oldest()->first();
-            if ($oldest) {
-                $oldest->update(['is_best_seller' => false]);
+        if ($request->has('is_best_seller')) {
+            $validated['is_best_seller'] = true;
+            
+            if (Product::where('is_best_seller', true)->count() >= 7) {
+                $oldest = Product::where('is_best_seller', true)->oldest()->first();
+                if ($oldest) {
+                    $oldest->update(['is_best_seller' => false]);
+                }
             }
-        }
-    } else {
-        $validated['is_best_seller'] = false;
-    }
-
-    $imagePaths = [];
-
-    if ($request->hasFile('images')) {
-        $destinationPath = public_path('img/products');
-        if (!file_exists($destinationPath)) {
-            mkdir($destinationPath, 0777, true);
+        } else {
+            $validated['is_best_seller'] = false;
         }
 
-        foreach ($request->file('images') as $image) {
-            if ($image && $image->isValid()) {
-                $ext = strtolower($image->getClientOriginalExtension());
-                if (in_array($ext, ['jpeg', 'png', 'jpg', 'webp']) && $image->getSize() <= (2048 * 1024)) {
-                    $imageName = time() . '_' . uniqid() . '.' . $ext;
-                    $image->move($destinationPath, $imageName);
-                    $imagePaths[] = 'img/products/' . $imageName;
+        $imagePaths = [];
+
+        if ($request->hasFile('images')) {
+            $destinationPath = public_path('img/products');
+            if (!file_exists($destinationPath)) {
+                mkdir($destinationPath, 0777, true);
+            }
+
+            foreach ($request->file('images') as $image) {
+                if ($image && $image->isValid()) {
+                    $ext = strtolower($image->getClientOriginalExtension());
+                    if (in_array($ext, ['jpeg', 'png', 'jpg', 'webp']) && $image->getSize() <= (2048 * 1024)) {
+                        $imageName = time() . '_' . uniqid() . '.' . $ext;
+                        $image->move($destinationPath, $imageName);
+                        $imagePaths[] = 'img/products/' . $imageName;
+                    }
                 }
             }
         }
+
+        $validated['images'] = $imagePaths;
+        $validated['slug'] = Str::slug($request->name) . '-' . uniqid();
+
+        Product::create($validated);
+
+        return redirect()->route('admin.products.index')->with('success', 'Ürün başarıyla eklendi.');
     }
-
-    $validated['images'] = $imagePaths;
-    $validated['slug'] = Str::slug($request->name) . '-' . uniqid();
-
-    Product::create($validated);
-
-    return redirect()->route('admin.products.index')->with('success', 'Ürün başarıyla eklendi.');
-}
 
     public function edit(Product $product)
     {
@@ -119,77 +114,71 @@ public function store(Request $request)
 
 public function update(Request $request, Product $product)
 {
-    if ($request->filled('sku')) {
+    // Ürün adı 36 karakterden uzunsa otomatik olarak ilk 36 karakterini alıyoruz
+    if ($request->has('name')) {
         $request->merge([
-            'sku' => strtoupper($request->sku)
+            'name' => mb_substr($request->input('name'), 0, 36)
         ]);
     }
 
     $validated = $request->validate([
         'name' => 'required|string|max:36',
-        'sku' => 'nullable|string|max:50|unique:products,sku,' . $product->id,
+        'brand' => 'nullable|string|max:255',
+        'barcode' => 'nullable|string|max:255',
+        'sku' => 'nullable|string|max:255',
         'category_id' => 'nullable|exists:categories,id',
         'description' => 'nullable|string|max:505',
-        'price' => 'required|numeric|min:0',
-        'discount_price' => 'nullable|numeric|min:0|lt:price',
-        'stock' => 'required|integer|min:0',
-        'trendyol_url' => 'nullable|url',
-        'hepsiburada_url' => 'nullable|url',
-        'idefix_url' => 'nullable|url',
-        'amazon_url' => 'nullable|url',
-        'pazarama_url' => 'nullable|url',
+        'price' => 'required|numeric',
+        'discount_price' => 'nullable|numeric',
+        'stock' => 'required|integer',
+        'trendyol_url' => 'nullable|url|max:500',
+        'hepsiburada_url' => 'nullable|url|max:500',
         'is_best_seller' => 'nullable|boolean',
     ]);
 
-    if ($request->has('is_best_seller')) {
-        $validated['is_best_seller'] = true;
-        
-        if (Product::where('is_best_seller', true)->where('id', '!=', $product->id)->count() >= 7) {
-            $oldest = Product::where('is_best_seller', true)->where('id', '!=', $product->id)->oldest()->first();
-            if ($oldest) {
-                $oldest->update(['is_best_seller' => false]);
-            }
-        }
-    } else {
-        $validated['is_best_seller'] = false;
-    }
+    // Temel alanları güncelleyelim
+    $product->name = $validated['name'];
+    $product->brand = $validated['brand'] ?? null;
+    $product->barcode = $validated['barcode'] ?? null;
+    $product->sku = $validated['sku'] ?? $product->sku;
+    $product->category_id = $validated['category_id'] ?? null;
+    $product->description = $validated['description'] ?? null;
+    $product->price = $validated['price'];
+    $product->discount_price = $validated['discount_price'] ?? null;
+    $product->stock = $validated['stock'];
+    $product->trendyol_url = $validated['trendyol_url'] ?? null;
+    $product->hepsiburada_url = $validated['hepsiburada_url'] ?? null;
+    $product->is_best_seller = $request->has('is_best_seller') ? 1 : 0;
 
-    $imagePaths = $product->images ?? [];
+    // Slug güncellemesi
+    $product->slug = \Illuminate\Support\Str::slug($validated['name']) . '-' . $product->id;
 
+    // Görsel silme ve ekleme işlemleri...
     if ($request->has('delete_images')) {
-        foreach ($request->delete_images as $oldImg) {
-            $filePath = public_path($oldImg);
-            if (file_exists($filePath)) {
-                @unlink($filePath);
+        $existingImages = $product->images ?? [];
+        $imagesToKeep = [];
+        foreach ($existingImages as $img) {
+            if (in_array($img, $request->delete_images)) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($img);
+            } else {
+                $imagesToKeep[] = $img;
             }
-            $imagePaths = array_values(array_diff($imagePaths, [$oldImg]));
         }
+        $product->images = $imagesToKeep;
     }
 
     if ($request->hasFile('images')) {
-        $destinationPath = public_path('img/products');
-        if (!file_exists($destinationPath)) {
-            mkdir($destinationPath, 0777, true);
+        $currentImages = $product->images ?? [];
+        foreach ($request->file('images') as $file) {
+            $path = $file->store('products', 'public');
+            $currentImages[] = $path;
         }
-
-        foreach ($request->file('images') as $image) {
-            if ($image && $image->isValid()) {
-                $ext = strtolower($image->getClientOriginalExtension());
-                if (in_array($ext, ['jpeg', 'png', 'jpg', 'webp']) && $image->getSize() <= (2048 * 1024)) {
-                    $imageName = time() . '_' . uniqid() . '.' . $ext;
-                    $image->move($destinationPath, $imageName);
-                    $imagePaths[] = 'img/products/' . $imageName;
-                }
-            }
-        }
+        $product->images = $currentImages;
     }
 
-    $validated['images'] = $imagePaths;
-    $validated['slug'] = Str::slug($request->name) . '-' . $product->id;
+    $product->save();
 
-    $product->update($validated);
-
-    return redirect()->route('admin.products.index')->with('success', 'Ürün ve görseller başarıyla güncellendi.');
+    return redirect()->route('admin.products.index')->with('success', 'Ürün başarıyla güncellendi.');
 }
 
     public function destroy(Product $product)
@@ -210,7 +199,7 @@ public function update(Request $request, Product $product)
 
 public function exportExcel()
 {
-    $fileName = 'alveral-urun-listesi-' . date('d-m-Y') . '.xls';
+    $fileName = 'sinem-urun-listesi-' . date('d-m-Y') . '.xls';
     
     $headers = [
         "Content-type"        => "application/vnd.ms-excel; charset=UTF-8",
@@ -299,4 +288,25 @@ public function exportExcel()
 
     return response()->stream($callback, 200, $headers);
 }
+
+    public function destroyAll()
+    {
+        \App\Models\Product::truncate();
+
+        return redirect()->route('admin.products.index')->with('success', 'Veritabanındaki tüm ürünler başarıyla temizlendi.');
+    }
+
+        public function updateBrandAll(Request $request)
+    {
+        $request->validate([
+            'new_brand' => 'required|string|max:255',
+        ]);
+
+        $newBrand = $request->input('new_brand');
+
+        // Veritabanındaki tüm ürünlerin 'brand' sütununu yeni marka ile günceller
+        \App\Models\Product::query()->update(['brand' => $newBrand]);
+
+        return redirect()->route('admin.products.index')->with('success', "Tüm ürünlerin markası başarıyla {$newBrand} olarak güncellendi.");
+    }
 }

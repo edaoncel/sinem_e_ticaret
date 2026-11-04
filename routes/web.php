@@ -13,31 +13,11 @@ use App\Http\Controllers\Admin\MarketplaceController;
 use App\Http\Controllers\KvkkController;
 
 Route::get('/kvkk', [KvkkController::class, 'kvkk'])->name('kvkk.terms');
-Route::prefix('yonetim')->name('admin.')->middleware(['web', 'auth:admin'])->group(function () {
-    
-    // Pazar Yeri / Alveral Entegrasyon Rotaları
-    Route::prefix('marketplaces')->name('marketplaces.')->group(function () {
-        Route::get('/settings', [MarketplaceController::class, 'settings'])->name('settings');
-        Route::post('/settings/{marketplace}', [MarketplaceController::class, 'updateSettings'])->name('settings.update');
-        Route::get('/logs', [MarketplaceController::class, 'logs'])->name('logs');
-        Route::post('/sync-all', [MarketplaceController::class, 'syncAll'])->name('syncAll');
-        
-        // Alveral Özel İşlem Rotaları (Blade içindeki isimlerle birebir uyumlu)
-        Route::post('/alveral/kar', [MarketplaceController::class, 'updateMargin'])->name('alveral.kar');
-        Route::post('/alveral/sync', [MarketplaceController::class, 'uploadAndSync'])->name('alveral.sync');
-    });
 
-});
 Route::get('/', [StoreController::class, 'index'])->name('store.index');
 Route::get('/iletisim', fn() => view('contact'))->name('contact');
 Route::post('/iletisim', [ContactController::class, 'store'])->name('contact.store');
 
-// Laravel'in auth:admin middleware'i için aradığı global 'login' rotası
-Route::get('/login', function () {
-    return redirect()->route('admin.login');
-})->name('login');
-
-// Yönetim Paneli Rotaları
 Route::prefix('yonetim')->name('admin.')->group(function () {
     Route::get('giris', [AuthController::class, 'showLoginForm'])->name('login');
     Route::post('giris', [AuthController::class, 'login']);
@@ -48,8 +28,14 @@ Route::prefix('yonetim')->name('admin.')->group(function () {
         Route::get('/visitors', [AdminController::class, 'visitors'])->name('visitors');
         Route::delete('/visitors/clear', [AdminController::class, 'clearVisitors'])->name('visitors.clear');
 
+        // Ürün İlgili Rotalar (Tekilleştirildi)
+        Route::delete('/products/destroy-all', [ProductController::class, 'destroyAll'])->name('products.destroy-all');
         Route::get('/products/export', [ProductController::class, 'exportExcel'])->name('products.export');
+        Route::put('/products/update-brand-all', [ProductController::class, 'updateBrandAll'])->name('products.update-brand-all');
         Route::resource('products', ProductController::class);
+        
+        Route::post('/categories/sync-xml', [CategoryController::class, 'syncFromXml'])->name('categories.sync-xml');
+        Route::delete('/categories/delete-all', [CategoryController::class, 'deleteAllCategories'])->name('categories.deleteAll');
         Route::resource('categories', CategoryController::class)->except(['show']);
 
         Route::resource('admins', AdminManagementController::class);
@@ -60,6 +46,10 @@ Route::prefix('yonetim')->name('admin.')->group(function () {
             Route::post('/settings/{marketplace}', [MarketplaceController::class, 'updateSettings'])->name('settings.update');
             Route::get('/logs', [MarketplaceController::class, 'logs'])->name('logs');
             Route::post('/sync-all', [MarketplaceController::class, 'syncAll'])->name('syncAll');
+            
+            // Sinem Özel İşlem Rotaları
+            Route::post('/sinem/kar', [MarketplaceController::class, 'updateMargin'])->name('sinem.kar');
+            Route::post('/sinem/sync', [MarketplaceController::class, 'uploadAndSync'])->name('sinem.sync');
         });
     });
 });

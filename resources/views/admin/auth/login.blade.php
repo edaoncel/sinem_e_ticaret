@@ -43,7 +43,7 @@
             @csrf
             <div>
                 <label class="block text-xs font-bold text-slate-700 uppercase tracking-widest mb-2">E-Posta Adresi</label>
-                <input type="email" name="email" value="{{ old('email') }}" required placeholder="ornek@alveral.com" class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-3.5 text-xs text-slate-800 focus:border-emerald-600 focus:bg-white outline-none transition placeholder-slate-400">
+                <input type="email" name="email" value="{{ old('email') }}" required placeholder="ornek@sinem.com" class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-3.5 text-xs text-slate-800 focus:border-emerald-600 focus:bg-white outline-none transition placeholder-slate-400">
             </div>
 
             <div>
