@@ -33,6 +33,7 @@ Route::prefix('yonetim')->name('admin.')->group(function () {
         Route::get('/products/export', [ProductController::class, 'exportExcel'])->name('products.export');
         Route::put('/products/update-brand-all', [ProductController::class, 'updateBrandAll'])->name('products.update-brand-all');
         Route::resource('products', ProductController::class);
+        Route::post('/admin/api/trigger-sync', [ProductController::class, 'syncFromXmlApi'])->name('admin.api.trigger-sync');
         
         Route::post('/categories/sync-xml', [CategoryController::class, 'syncFromXml'])->name('categories.sync-xml');
         Route::delete('/categories/delete-all', [CategoryController::class, 'deleteAllCategories'])->name('categories.deleteAll');
