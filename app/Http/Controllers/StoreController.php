@@ -20,42 +20,24 @@ class StoreController extends Controller
             });
         }
 
-        $selectedCategory = null;
-
         if ($request->has('category') && $request->category != '') {
-            // Slug değerine göre seçilen kategoriyi buluyoruz
-            $selectedCategory = Category::with('products')->where('slug', $request->category)->first();
-
-            if ($selectedCategory) {
-                // Sadece bu kategoriye ait ürünleri filtrele
-                $query->where('category_id', $selectedCategory->id);
-            }
+            $query->whereHas('category', function($q) use ($request) {
+                $q->where('slug', $request->category);
+            });
         }
 
-        $products = $query->latest()->paginate(18)->fragment('urunler');
+        $products = $query->orderBy('name', 'asc') // Veya 'sku' bazlı sıralama
+                  ->paginate(18)
+                  ->withQueryString()
+                  ->fragment('urunler');
         $productsCount = Product::count();
         
         $categories = Category::with('products')->get();
-        
-        // Menüde gösterilecek kategoriler (Footer ve Blade için)
-        $menuCategories = Category::where('show_in_menu', true)->get();
-        
-        // Özel menü kategorilerinin slug listesi (Ürün kartlarını parlatmak için)
-        $menuCategorySlugs = $menuCategories->pluck('slug')->toArray();
         
         $bestSellers = Product::with('category')->where('is_best_seller', true)->latest()->take(7)->get();
 
         $discountedProducts = Product::with('category')->whereNotNull('discount_price')->where('discount_price', '>', 0)->latest()->take(6)->get();
 
-        return view('store.index', compact(
-            'products', 
-            'categories', 
-            'bestSellers', 
-            'discountedProducts', 
-            'productsCount', 
-            'selectedCategory', 
-            'menuCategories',      // Footer için çoğul isimle düzeltildi
-            'menuCategorySlugs'    // Ürün kartı stilleri için eklendi
-        ));
+        return view('store.index', compact('products', 'categories', 'bestSellers', 'discountedProducts', 'productsCount'));
     }
 }

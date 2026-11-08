@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\View;
 use App\Models\Product;
 use App\Models\Category;
 use App\Observers\ProductObserver;
+use App\Models\ContactMessage;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -18,10 +19,19 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        Product::observe(ProductObserver::class);
+        View::composer('*', function ($view) {
+        $view->with('categories', Category::all());
+        $view->with('menuCategories', Category::where('show_in_menu', true)->get());
+    });
 
-        View::composer('layouts.store', function ($view) {
-            $view->with('categories', Category::all());
-        });
+    // 2. Sadece Sizin Admin Panelinize Özel Bildirimler ve Sayaçlar
+    View::composer('admin.*', function ($view) {
+        $unreadCount = ContactMessage::where('is_read', false)->count();
+        $updatedTodayCount = Product::whereDate('updated_at', today())
+                                    ->whereColumn('updated_at', '>', 'created_at')
+                                    ->count();
+
+        $view->with(compact('unreadCount', 'updatedTodayCount'));
+    });
     }
 }

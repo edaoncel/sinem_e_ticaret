@@ -15,19 +15,31 @@ class AdminController extends Controller
     {
         $unreadMessagesCount = ContactMessage::where('is_read', false)->count();
         $productsCount = Product::count();
+        
         $categories = Category::withCount('products')->get();
+        $specialCategories = Category::where('show_in_menu', true)->withCount('products')->get();
         
         $totalVisitors = Visitor::count();
         $todayVisitors = Visitor::whereDate('created_at', today())->count();
 
+        // Bugün eklenen ve güncellenen ürün sayaçları
+        $newTodayCount = Product::whereDate('created_at', today())->count();
+        
+        $updatedTodayCount = Product::whereDate('updated_at', today())
+                                    ->whereColumn('updated_at', '>', 'created_at')
+                                    ->count();
+
         $syncedProductsCount = \App\Models\MarketplaceLog::where('status', 'success')->count();
 
         return view('admin.dashboard', compact(
-            'unreadMessagesCount', 
+            'unreadMessagesCount',
             'productsCount', 
             'categories',
+            'specialCategories',
             'totalVisitors',
             'todayVisitors',
+            'newTodayCount',      
+            'updatedTodayCount',  
             'syncedProductsCount'
         ));
     }
